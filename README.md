@@ -50,3 +50,4 @@ We owe a huge special thanks to our teacher's assistants and our groupmate Steph
 ### Conclusions
 
 Though our dataset was hardly ideal, we discovered that the real-world truth of our work would often be working with datasets that are far from perfect. We were tackling an ambitious dataset with our current skill level that we hope was representative of our skills at the time and can stand as a benchmark for later projects. I learned a great deal about user experience in presenting data, and like our MLB project, we learned that telling a story with data can take many forms. 
+
