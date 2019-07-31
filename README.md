@@ -18,19 +18,19 @@ Going into the project, we knew we were going to need to limit the scope of our 
 We knew we could pull prescribing data for prescription opioids by county and state from Vital Statistics with minimal effort. It was extracting information from the CDC that posed initial challenges. Though all of us were present during ETL, Marshall Doig was a key teammate when it came to the extrapolation and translation of the data we needed from the CDC. Originally, Marshall pulled several CSVs from varying years and discovered that the CDC (characteristic of any bureaucracy) encoded their cause of death data, and when causes of death were pulled per year, it included all causes of death. Marshall used a copy of the CDC's code parser to sift through the CDC's causes of death to include only those deaths where opioid overdose was the cause regardless of which opioid was used. While this worked for data up to the year 2013, Marshall was concerned that the parser was not current. Later we found that not to be the case, but before we sat down to test that theory, Marshall discovered the WONDER database, which gathered data from the CDC by year, state, and cause of death, parsed it, and pushed out a clean CSV for download. After that, the CDC data needed very little cleaning.
 
 <img src="WONDERdbCSV.png">
-<p align="center">*The CSV output of the WONDER database, decoded for our convenience*</p>
+->*The CSV output of the WONDER database, decoded for our convenience*<-
 
 Though the CDC provided death rates by cause of death, groupmate Robert McAlmon suggested giving our own death rates, which he calculated and Marshall implemented for prescribed opioids, illegal opioids, and synthetic opioids. Marshall also calculated the prescribing and death rates for each traditional opioid and synthetic opioid. Working with our own prescribing rates and death rates meant we could reliably say that our death rates matched our given dataset rather than relying on the CDC or Vital Statistics. In addition to prescribing and rates per opioid by state, we were able to assess the prescribing and death rates by county in each state. 
 
 <img src="counties_all_years.jpg">
-<p align="center">*This large dataframe contained the prescribing rates, death rates, and vital statistics for each county for each year.*</p>
+->*This large dataframe contained the prescribing rates, death rates, and vital statistics for each county for each year.*<-
 
 However, this soon proved to be too granular, as many counties did not seem to "accurately" report the numbers of overdose deaths if those numbers were less than seven total deaths per year. Robert discovered that this is to protect the identities of overdose victims and their families. The CDC feared that death counts smaller than seven occurrences would make it too easy to identify those who had died, especially in sparsely-populated counties. Rather than take that risk, the CDC simply "suppressed" the death toll for that year if it was too low. 
 
 Marshall then took each of the CSVs from the WONDER database and the scraped prescribing rates at the state and county levels from an interactive map that already contained that data from the CDC. He pivoted dataframes from each CSV and each scraped HTML set to present opioid death and prescribing rate for each state by year, the mean prescribing rate by state aggregated from the entire dataset, the death and prescribing rates of each county per state by year, and a CSV with the merged mean prescribing rate coupled with the mean death rate per state in aggregate. That last dataframe would be used to create the map in Leaflet.js later in the project.
 
 <img src="states_rates.jpg">
-<p align="center">*This dataframe would later be used as part of the route called to produce the Leaflet.js chloropleth map.*</p>
+->*This dataframe would later be used as part of the route called to produce the Leaflet.js chloropleth map.*<-
 
 ### The API
 
@@ -41,7 +41,7 @@ Our first API route made a query to the SQLite database that selected all of the
 The next two routes took county_state_by_year data from the SQLite database and jsonified two lists of county lists containing dictionaries of all the county prescribing data, the difference being that the first county route took state as an input and the second route did not need to, as it was designed for a separate dashboard section. The state input comes from a dropdown menu in the front-end interface that changes the output of the time-series and linear regression charts on the state chosen.
 
 <img src="dropdown-menu.png">
-<p align="center">*Part of the interactive interface that allows users to view statistics based on the chosen state in the United States.*</p>
+->*Part of the interactive interface that allows users to view statistics based on the chosen state in the United States.*<-
 
 The API 'prescribing' route took the state id, name, and mean prescribing rate from the States_prescribing_rate table and returned a jsonified dictionary for use in the time series and linear regression analysis.
 
@@ -50,15 +50,15 @@ The API 'prescribing' route took the state id, name, and mean prescribing rate f
 We decided to produce exploratory visuals or our dashboard. Rather than rehash previous findings or make sweeping generalizations, we created a set of visuals that presented the data as it stood on its own. So much of what we as consumers of media rely on comes from data that is taken out of context, we decided to present the facts as they stood. We used a time-series graph created by Robert to show the prescription and death rates by state over time. The time-series graph was created in plotly, as were the county-level linear regression models (created by Stephanie Engeling) that broke down the prescription and death rates by opioid type. 
 
 <img src="time-series.png">
-<p align="center">*A look at the time series plot for Alabama*</p>
+->*A look at the time series plot for Alabama*<-
 
 <img src="linear-regression.jpg">
-<p align="center">*Linear Regression plots display the relationship between death rates by overdose on opioids at the county level per substance type for the state of Alabama*.</p>
+->*Linear Regression plots display the relationship between death rates by overdose on opioids at the county level per substance type for the state of Alabama*.<-
 
 A map created in Leaflet.js by Marshall gives a final, but broad, overview of prescription and opioid overdose rates by state. Originally, the map was meant to zoom in at the county level, but a difference in county names in our two data sets prevented a reasonable join in the data, and we could not add that feature to the GeoJSON Marshall manipulated from Leaflet's stock map design. 
 
 <img src="map2.jpg">
-<p align="center">*Leaflet.js map uses tooltips to display mean overdose and prescription rates by state. A toggle switches between colors on a chloropleth map.*</p>
+->*Leaflet.js map uses tooltips to display mean overdose and prescription rates by state. A toggle switches between colors on a chloropleth map.*<-
 
 An interesting observation we noticed was a downward trend in opioid prescription rates starting in 2010. According to [History of the Opioid Epidemic: How Did We Get Here?](https://www.poison.org/articles/opioid-epidemic-history-and-prescribing-patterns-182), "The second wave of the opioid epidemic started around 2010 with a rapid increase in deaths from heroin abuse. As early efforts to decrease opioid prescribing began to take effect, making prescription opioids harder to obtain..." so it makes sense that prescription rates for opioids dropped shortly after or around 2010 as legislation was introduced to curb its use, especially in VA hospitals. Therefore, it is also not surprising to see heroin usage and thus overdose increasing as well. 
 
